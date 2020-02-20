@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
 
-@SpringBootApplication(scanBasePackages = {"com.*"})  
+@SpringBootApplication(scanBasePackages = {"com.fms.*"})  
 @EnableJpaRepositories("com.fms.*")
 @ComponentScan(basePackages = { "com.fms.*" })
 @EntityScan("com.fms.*") 

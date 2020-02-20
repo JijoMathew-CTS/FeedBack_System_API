@@ -6,19 +6,20 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.fms.entity.EventPK;
-import com.fms.entity.VolunteerAttended;
+import com.fms.entity.VolunteerAttendedEntity;
 
-public interface VolunteerAttendedRepo extends CrudRepository<VolunteerAttended, EventPK> {
+@Repository
+public interface VolunteerAttendedRepo extends CrudRepository<VolunteerAttendedEntity, EventPK> {
 
-	public Optional<VolunteerAttended> findByEventPK(EventPK eventPK);
+	public Optional<VolunteerAttendedEntity> findByEventPK(EventPK eventPK);
 	
-	public List<VolunteerAttended> findByEmailStatus(String emailStatus);
+	public List<VolunteerAttendedEntity> findByEmailStatus(String emailStatus);
 
 	@Override
-	@Query
-	default <S extends VolunteerAttended> Iterable<S> saveAll(Iterable<S> list) {
+	default <S extends VolunteerAttendedEntity> Iterable<S> saveAll(Iterable<S> list) {
 		list.forEach(ele -> {
 			if (!findByEventPK(ele.getEventPK()).isPresent()) {
 				save(ele);
@@ -27,7 +28,10 @@ public interface VolunteerAttendedRepo extends CrudRepository<VolunteerAttended,
 		return null;
 	}
 
-	@Query(value="SELECT distinct employee_id FROM fmsdb.vol_event_attended", nativeQuery=true)
+	@Query(value="SELECT distinct employee_id FROM outreachfeedbackdb.vol_event_attended", nativeQuery=true)
 	public List<String> findDistinctAttended();
+	
+	@Query(value="SELECT distinct employee_id FROM outreachfeedbackdb.vol_event_attended where event_id in :eventList", nativeQuery=true)
+	public List<String> findDistinctAttendedByEvents(List<String> eventList);
 
 }

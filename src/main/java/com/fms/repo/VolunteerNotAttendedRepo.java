@@ -5,16 +5,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
 import com.fms.entity.EventPK;
-import com.fms.entity.VolunteerNotAttended;
+import com.fms.entity.VolunteerNotAttendedEntity;
 
-public interface VolunteerNotAttendedRepo extends CrudRepository<VolunteerNotAttended, EventPK> {
-	public Optional<VolunteerNotAttended> findByEventPK(EventPK eventPK);
+@Repository
+public interface VolunteerNotAttendedRepo extends CrudRepository<VolunteerNotAttendedEntity, EventPK> {
+	public Optional<VolunteerNotAttendedEntity> findByEventPK(EventPK eventPK);
 
 	@Override
-	@Query
-	default <S extends VolunteerNotAttended> Iterable<S> saveAll(Iterable<S> list) {
+	default <S extends VolunteerNotAttendedEntity> Iterable<S> saveAll(Iterable<S> list) {
 		list.forEach(ele -> {
 			if (!findByEventPK(ele.getEventPK()).isPresent()) {
 				save(ele);
@@ -23,9 +24,7 @@ public interface VolunteerNotAttendedRepo extends CrudRepository<VolunteerNotAtt
 		return null;
 	}
 
-	public List<VolunteerNotAttended> findByEmailStatus(String string);
-
-	@Query(value="SELECT distinct employee_id FROM fmsdb.vol_event_not_attended", nativeQuery=true)
+	@Query(value="SELECT distinct employee_id FROM outreachfeedbackdb.vol_event_not_attended", nativeQuery=true)
 	public List<String> findDistinctNotAttended();
 
 }

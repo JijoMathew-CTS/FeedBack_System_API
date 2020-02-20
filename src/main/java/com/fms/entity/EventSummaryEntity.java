@@ -15,75 +15,101 @@ public class EventSummaryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
 	private Long id;
-	@Column(name="event_id")
-	private String event_Id;
-	@Column(name="poc_id")
-	private String poc_Id;
-	@Column(name="poc_name")
-	private String poc_Name;
-	@Column(name="month")
-	private String month;
-	@Column(name="base_location")
-	private String base_location;
-	@Column(name="beneficiary_name")
-	private String beneficiary_name;
-	@Column(name="venue_address")
-	private String venue_address;
-	@Column(name="council_name")
-	private String council_name;
-	@Column(name="project")
+	
+	@Column(name = "event_id")
+	private String eventId;	
+	
+	@Column(name = "month")
+	private String month;	
+	
+	@Column(name = "base_location")
+	private String baseLocation;
+	
+	@Column(name = "beneficiary_name")
+	private String beneficiaryName;	
+	
+	@Column(name = "venue_address")
+	private String venueAddress;	
+	
+	@Column(name = "council_name")
+	private String councilName;
+	
+	@Column(name = "project")
 	private String project;
-	@Column(name="catagory")
-	private String catagory;
-	@Column(name="event_name")
-	private String event_name;
-	@Column(name="event_description")
-	private String event_description;
-	@Column(name="event_date")
-	private Date event_date;
-	@Column(name="total_vol_no")
-	private Integer total_vol_no;
-	@Column(name="total_vol_hrs")
-	private Integer total_vol_hrs;
-	@Column(name="total_travel_hrs")
-	private Integer total_travel_hrs;
-	@Column(name="overall_vol_hrs")
-	private Integer overall_vol_hrs;
-	@Column(name="lives_impact")
-	private Integer lives_impact;
-	@Column(name="activity_type")
-	private String activity_type;
-	@Column(name="status")
-	private String status;
-	@Column(name="poc_contact")
-	private Integer poc_contact;
 	
-	public String getMonth() {
-		return month;
-	}
+	@Column(name = "category")
+	private String category;
+	
+	@Column(name = "event_name")
+	private String eventName;
+	
+	@Column(name = "event_description")
+	private String eventDescription;
+	
+	@Column(name = "event_date")
+	private Date eventDate;
+	
+	@Column(name = "total_no_volunteers")
+	private Integer totalNoOfVolunteers;
+	
+	@Column(name = "total_vol_hours")
+	private Double totalVolHours;
+	
+	@Column(name = "total_travel_hours")
+	private Double totalTravelHours;
+	
+	@Column(name = "over_all_vol_hours")
+	private Double overAllVolHours;
+	
+	@Column(name = "lives_impacted")
+	private Integer livesImpacted;
+	
+	@Column(name = "activity_type")
+	private String activityType;
+	
+	@Column(name = "status")
+	private String status;	
+	
+	@Column(name = "poc_id")
+	private String pocId;
+	
+	@Column(name = "poc_name")
+	private String pocName;
+	
+	@Column(name = "poc_contact_number")
+	private String pocContactNumber;
 
-	public void setMonth(String month) {
-		this.month = month;
-	}
-
-	public String getBase_location() {
-		return base_location;
-	}
-
-	public void setBase_location(String base_location) {
-		this.base_location = base_location;
-	}
-
-	public String getBeneficiary_name() {
-		return beneficiary_name;
-	}
-
-	public void setBeneficiary_name(String beneficiary_name) {
-		this.beneficiary_name = beneficiary_name;
-	}
 
 	
+	public EventSummaryEntity() {
+		super();
+	}
+
+	public String getEventId() {
+		return eventId;
+	}
+
+	public void setEventId(String eventId) {
+		this.eventId = eventId;
+	}
+
+	public String getPocId() {
+		return pocId;
+	}
+
+	public void setPocId(String pocId) {
+		this.pocId = pocId;
+	}
+
+	public String getPocName() {
+		return pocName;
+	}
+
+	public void setPocName(String pocName) {
+		this.pocName = pocName;
+	}
 
 	public Long getId() {
 		return id;
@@ -93,21 +119,44 @@ public class EventSummaryEntity {
 		this.id = id;
 	}
 
-	
-	public String getVenue_address() {
-		return venue_address;
+	public String getMonth() {
+		return month;
 	}
 
-	public void setVenue_address(String venue_address) {
-		this.venue_address = venue_address;
+	public void setMonth(String month) {
+		this.month = month;
 	}
 
-	public String getCouncil_name() {
-		return council_name;
+	public String getBaseLocation() {
+		return baseLocation;
 	}
 
-	public void setCouncil_name(String council_name) {
-		this.council_name = council_name;
+	public void setBaseLocation(String baseLocation) {
+		this.baseLocation = baseLocation;
+	}
+
+	public String getBeneficiaryName() {
+		return beneficiaryName;
+	}
+
+	public void setBeneficiaryName(String beneficiaryName) {
+		this.beneficiaryName = beneficiaryName;
+	}
+
+	public String getVenueAddress() {
+		return venueAddress;
+	}
+
+	public void setVenueAddress(String venueAddress) {
+		this.venueAddress = venueAddress;
+	}
+
+	public String getCouncilName() {
+		return councilName;
+	}
+
+	public void setCouncilName(String councilName) {
+		this.councilName = councilName;
 	}
 
 	public String getProject() {
@@ -118,84 +167,84 @@ public class EventSummaryEntity {
 		this.project = project;
 	}
 
-	public String getCatagory() {
-		return catagory;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setCatagory(String catagory) {
-		this.catagory = catagory;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
-	public String getEvent_name() {
-		return event_name;
+	public String getEventName() {
+		return eventName;
 	}
 
-	public void setEvent_name(String event_name) {
-		this.event_name = event_name;
+	public void setEventName(String eventName) {
+		this.eventName = eventName;
 	}
 
-	public String getEvent_description() {
-		return event_description;
+	public String getEventDescription() {
+		return eventDescription;
 	}
 
-	public void setEvent_description(String event_description) {
-		this.event_description = event_description;
+	public void setEventDescription(String eventDescription) {
+		this.eventDescription = eventDescription;
 	}
 
-	public Date getEvent_date() {
-		return event_date;
+	public Date getEventDate() {
+		return eventDate;
 	}
 
-	public void setEvent_date(Date event_date) {
-		this.event_date = event_date;
+	public void setEventDate(Date eventDate) {
+		this.eventDate = eventDate;
 	}
 
-	public Integer getTotal_vol_no() {
-		return total_vol_no;
+	public Integer getTotalNoOfVolunteers() {
+		return totalNoOfVolunteers;
 	}
 
-	public void setTotal_vol_no(Integer total_vol_no) {
-		this.total_vol_no = total_vol_no;
+	public void setTotalNoOfVolunteers(Integer totalNoOfVolunteers) {
+		this.totalNoOfVolunteers = totalNoOfVolunteers;
 	}
 
-	public Integer getTotal_vol_hrs() {
-		return total_vol_hrs;
+	public Double getTotalVolHours() {
+		return totalVolHours;
 	}
 
-	public void setTotal_vol_hrs(Integer total_vol_hrs) {
-		this.total_vol_hrs = total_vol_hrs;
+	public void setTotalVolHours(Double totalVolHours) {
+		this.totalVolHours = totalVolHours;
 	}
 
-	public Integer getTotal_travel_hrs() {
-		return total_travel_hrs;
+	public Double getTotalTravelHours() {
+		return totalTravelHours;
 	}
 
-	public void setTotal_travel_hrs(Integer total_travel_hrs) {
-		this.total_travel_hrs = total_travel_hrs;
+	public void setTotalTravelHours(Double totalTravelHours) {
+		this.totalTravelHours = totalTravelHours;
 	}
 
-	public Integer getOverall_vol_hrs() {
-		return overall_vol_hrs;
+	public Double getOverAllVolHours() {
+		return overAllVolHours;
 	}
 
-	public void setOverall_vol_hrs(Integer overall_vol_hrs) {
-		this.overall_vol_hrs = overall_vol_hrs;
+	public void setOverAllVolHours(Double overAllVolHours) {
+		this.overAllVolHours = overAllVolHours;
 	}
 
-	public Integer getLives_impact() {
-		return lives_impact;
+	public Integer getLivesImpacted() {
+		return livesImpacted;
 	}
 
-	public void setLives_impact(Integer lives_impact) {
-		this.lives_impact = lives_impact;
+	public void setLivesImpacted(Integer livesImpacted) {
+		this.livesImpacted = livesImpacted;
 	}
 
-	public String getActivity_type() {
-		return activity_type;
+	public String getActivityType() {
+		return activityType;
 	}
 
-	public void setActivity_type(String activity_type) {
-		this.activity_type = activity_type;
+	public void setActivityType(String activityType) {
+		this.activityType = activityType;
 	}
 
 	public String getStatus() {
@@ -206,86 +255,14 @@ public class EventSummaryEntity {
 		this.status = status;
 	}
 
-	public Integer getPoc_contact() {
-		return poc_contact;
+	public String getPocContactNumber() {
+		return pocContactNumber;
 	}
 
-	public void setPoc_contact(Integer poc_contact) {
-		this.poc_contact = poc_contact;
+	public void setPocContactNumber(String pocContactNumber) {
+		this.pocContactNumber = pocContactNumber;
 	}
-
-	public EventSummaryEntity() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public String getEvent_Id() {
-		return event_Id;
-	}
-
-	public void setEvent_Id(String event_Id) {
-		this.event_Id = event_Id;
-	}
-
-	public String getPoc_Id() {
-		return poc_Id;
-	}
-
-	public void setPoc_Id(String poc_Id) {
-		this.poc_Id = poc_Id;
-	}
-
-	public String getPoc_Name() {
-		return poc_Name;
-	}
-
-	public void setPoc_Name(String poc_Name) {
-		this.poc_Name = poc_Name;
-	}
-
-	public EventSummaryEntity(Long id, String event_Id, String poc_Id,
-			String poc_Name, String month, String base_location,
-			String beneficiary_name, String venue_address, String council_name,
-			String project, String catagory, String event_name,
-			String event_description, Date event_date, Integer total_vol_no,
-			Integer total_vol_hrs, Integer total_travel_hrs,
-			Integer overall_vol_hrs, Integer lives_impact,
-			String activity_type, String status, Integer poc_contact) {
-		super();
-		this.id = id;
-		this.event_Id = event_Id;
-		this.poc_Id = poc_Id;
-		this.poc_Name = poc_Name;
-		this.month = month;
-		this.base_location = base_location;
-		this.beneficiary_name = beneficiary_name;
-		this.venue_address = venue_address;
-		this.council_name = council_name;
-		this.project = project;
-		this.catagory = catagory;
-		this.event_name = event_name;
-		this.event_description = event_description;
-		this.event_date = event_date;
-		this.total_vol_no = total_vol_no;
-		this.total_vol_hrs = total_vol_hrs;
-		this.total_travel_hrs = total_travel_hrs;
-		this.overall_vol_hrs = overall_vol_hrs;
-		this.lives_impact = lives_impact;
-		this.activity_type = activity_type;
-		this.status = status;
-		this.poc_contact = poc_contact;
-	}
-
 	
-	
-
-	/*public EventSummaryEntity(String event_Id, String poc_Id, String poc_Name) {
-		super();
-		this.event_Id = event_Id;
-		this.poc_Id = poc_Id;
-		this.poc_Name = poc_Name;
-	}
-*/
 	
 
 }
