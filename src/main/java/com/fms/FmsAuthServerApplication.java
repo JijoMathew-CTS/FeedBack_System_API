@@ -12,7 +12,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication(scanBasePackages = {"com.fms.*"})  
 @EnableJpaRepositories("com.fms.*")
-@ComponentScan(basePackages = { "com.fms.*" })
+@ComponentScan(basePackages = { "com.*" })
 @EntityScan("com.fms.*") 
 @PropertySource({
 	"classpath:mail.properties"

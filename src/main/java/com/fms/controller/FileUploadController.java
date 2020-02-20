@@ -42,7 +42,7 @@ public class FileUploadController {
 	    model.addAttribute("message", "File: " + file.getOriginalFilename() 
 	      + " has been uploaded successfully!");
 	    
-	 /*   excelService.saveExcel(fileLocation,file.getOriginalFilename());*/
+	   excelService.saveExcel(fileLocation,file.getOriginalFilename());
 	    
 	    return "excel";
 	}
