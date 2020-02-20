@@ -5,10 +5,10 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.1.4.RELEASE</version>
+		<version>2.2.0.BUILD-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>com.fms</groupId>
 	<artifactId>FeedBackSystem</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>FeedBackSystem</name>
@@ -39,7 +39,6 @@
 		<dependency>
 			<groupId>mysql</groupId>
         	<artifactId>mysql-connector-java</artifactId>
-        	 <version>5.1.45</version> 
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -61,17 +60,20 @@
 			<artifactId>poi-ooxml</artifactId>
 			<version>4.0.1</version>
 		</dependency>
+		
 		<dependency>
-                <groupId>com.sun.mail</groupId>
-                <artifactId>javax.mail</artifactId>
-                <version>1.6.2</version>
-            </dependency>
-            <dependency>
-    			<groupId>org.springframework.security</groupId>
-    			<artifactId>spring-security-core</artifactId>
-    			<!-- <version>5.0.0.RELEASE</version> -->
- 			</dependency>
-	</dependencies>
+	<groupId>io.springfox</groupId>
+	<artifactId>springfox-swagger2</artifactId>
+	<version>2.4.0</version>
+</dependency>
+	<dependency>
+		<groupId>io.springfox</groupId>
+		<artifactId>springfox-swagger-ui</artifactId>
+		<version>2.4.0</version>
+	</dependency>
+	
+	
+</dependencies>
 
 	<build>
 		<plugins>
