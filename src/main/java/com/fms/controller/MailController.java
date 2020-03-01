@@ -97,7 +97,7 @@ public class MailController {
 			MimeMessage message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(from));
 			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-			message.setSubject(environment.getProperty("mail.subject"));
+			message.setSubject("Outreach Feedback");
 			// message.setText(msg);
 			message.setContent(mailBodyStr, "text/html");
 

@@ -6,18 +6,17 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
 import com.fms.entity.EventPK;
-import com.fms.entity.VolunteerUnregisteredEntity;
+import com.fms.entity.VolunteerUnregistered;
 
-@Repository
-public interface VolunteerUnregisteredRepo extends CrudRepository<VolunteerUnregisteredEntity, EventPK> {
+public interface VolunteerUnregisteredRepo extends CrudRepository<VolunteerUnregistered, EventPK> {
 
-	public Optional<VolunteerUnregisteredEntity> findByEventPK(EventPK eventPK);
+	public Optional<VolunteerUnregistered> findByEventPK(EventPK eventPK);
 
 	@Override
-	default <S extends VolunteerUnregisteredEntity> Iterable<S> saveAll(Iterable<S> list) {
+	@Query
+	default <S extends VolunteerUnregistered> Iterable<S> saveAll(Iterable<S> list) {
 		list.forEach(ele -> {
 			if (!findByEventPK(ele.getEventPK()).isPresent()) {
 				save(ele);
@@ -26,7 +25,9 @@ public interface VolunteerUnregisteredRepo extends CrudRepository<VolunteerUnreg
 		return null;
 	}
 
-	@Query(value = "SELECT distinct employee_id FROM outreachfeedbackdb.vol_event_unregistered", nativeQuery = true)
+	public List<VolunteerUnregistered> findByEmailStatus(String string);
+
+	@Query(value = "SELECT distinct employee_id FROM fmsdb.vol_event_unregistered", nativeQuery = true)
 	public List<String> findDistinctUnRegistered();
 
 }

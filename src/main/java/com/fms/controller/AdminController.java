@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fms.entity.IFeedbackStatus;
+import com.fms.model.UserMasterResponse;
 import com.fms.service.AdminService;
 
 @CrossOrigin(origins = "*")
@@ -50,5 +51,14 @@ public class AdminController {
 		report = adminService.getFeedbackStatusReport(type);
 		return report;
 
+	}
+
+	@GetMapping("/getAllPMO/{role}")
+	public List<UserMasterResponse> getAllPMOUsers(@PathVariable String role, HttpServletRequest request){
+		
+		List<UserMasterResponse> usersData=new ArrayList<>();
+		usersData=adminService.getAllPMODetails(role);
+		return usersData;
+		
 	}
 }

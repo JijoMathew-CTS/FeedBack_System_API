@@ -32,13 +32,10 @@ public class EventDetailResponse {
 	private String status;
 	private Integer pocContact;
 	
-	
-	public EventDetailResponse(String eventId, String baseLocation,
-			String beneficiaryName, String eventName, String councilName,
-			String venueAddress, String project, String catagory,
-			String eventDescription, Date eventDate, Integer totalVolNo,
-			Integer totalVolHrs, Integer totalTravelHrs, Integer overallVolHrs,
-			Integer livesImpact, String activityType, String status,
+	public EventDetailResponse(String eventId, String baseLocation, String beneficiaryName, String eventName,
+			String councilName, String pocId, String pocName, String month, String venueAddress, String project,
+			String catagory, String eventDescription, Date eventDate, Integer totalVolNo, Integer totalVolHrs,
+			Integer totalTravelHrs, Integer overallVolHrs, Integer livesImpact, String activityType, String status,
 			Integer pocContact) {
 		super();
 		this.eventId = eventId;
@@ -62,10 +59,9 @@ public class EventDetailResponse {
 		this.activityType = activityType;
 		this.status = status;
 		this.pocContact = pocContact;
-		
 	}
 
-	
+
 
 	public String getPocId() {
 		return pocId;

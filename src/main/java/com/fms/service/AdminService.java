@@ -6,16 +6,17 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fms.entity.IFeedbackStatus;
+import com.fms.entity.UserMasterDetails;
 import com.fms.entity.UserRole;
 import com.fms.model.Roles;
+import com.fms.model.UserMasterResponse;
 import com.fms.repo.EventRptRepository;
 import com.fms.repo.RoleRepository;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class AdminService {
@@ -76,5 +77,23 @@ public class AdminService {
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 	    return new BCryptPasswordEncoder();
+	}
+	
+	public List<UserMasterResponse> getAllPMODetails(String role){
+		List<UserMasterDetails> usersData=new ArrayList<>();
+		
+		usersData=eRepository.retrievePMODetailsByRole(role);
+		System.out.print("usersData="+usersData.get(0).getUserId()+"**"+eRepository.retrievePMODetailsByRole(role).get(0).getUserId());
+		List<UserMasterResponse>userDetails=new ArrayList<>();
+		for(UserMasterDetails user:usersData) {
+			UserMasterResponse userResponse=new UserMasterResponse();
+			userResponse.setUserId(user.getUserId());
+			userResponse.setFirstName(user.getFirstName());
+			userResponse.setLastName(user.getLastName());
+			userResponse.setEmailAddress(user.getEmailAddress());
+			userDetails.add(userResponse);
+		}
+		return userDetails;
+		
 	}
 }

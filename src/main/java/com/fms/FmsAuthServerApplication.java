@@ -2,21 +2,17 @@ package com.fms;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 
+@SpringBootApplication
 
-
-@SpringBootApplication(scanBasePackages = {"com.fms.*"})  
-@EnableJpaRepositories("com.fms.*")
-@ComponentScan(basePackages = { "com.*" })
-@EntityScan("com.fms.*") 
+@ComponentScan("com.fms")
 @PropertySource({
 	"classpath:mail.properties"
 })
+
 public class FmsAuthServerApplication {
 
 	public static void main(String[] args) {

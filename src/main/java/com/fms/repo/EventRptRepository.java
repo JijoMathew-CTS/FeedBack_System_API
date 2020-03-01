@@ -1,7 +1,6 @@
 package com.fms.repo;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,6 +9,7 @@ import com.fms.entity.EventDetails;
 import com.fms.entity.EventSummaryEntity;
 import com.fms.entity.IEventReport;
 import com.fms.entity.IFeedbackStatus;
+import com.fms.entity.UserMasterDetails;
 
 public interface EventRptRepository  extends CrudRepository<EventSummaryEntity, Long> {
 
@@ -41,11 +41,16 @@ public interface EventRptRepository  extends CrudRepository<EventSummaryEntity, 
 	@Query(value = "SELECT vf.event_id as eventId, vf.employee_id as employeeId, vea.email_status as emailStatus, vf.status as feedbackStatus FROM vol_event_unregistered vea inner join volunteer_feedback_unreg vf on vea.event_id = vf.event_id and vea.employee_id = vf.employee_id;", nativeQuery = true)
 	List<IFeedbackStatus> findAllByVunStatus();
 	
-	@Query(value="SELECT distinct event_id FROM event_summary", nativeQuery=true)
+	@Query(value="SELECT distinct event_id FROM fmsdb.event_summary", nativeQuery=true)
 	List<String> findDistinctEvents();
 	@Query(value="SELECT event_id,poc_id,poc_name,month,base_location,beneficiary_name,venue_address,council_name,project,catagory,event_name,event_description,event_date,total_vol_no,total_vol_hrs,total_travel_hrs,overall_vol_hrs,lives_impact,activity_type,status,poc_contact FROM event_summary", nativeQuery=true)
 	List<EventDetails> findEventDetails();
-	
+	@Query(value="SELECT event_id,poc_id,poc_name,month,base_location,beneficiary_name,venue_address,council_name,project,catagory,event_name,event_description,event_date,total_vol_no,total_vol_hrs,total_travel_hrs,overall_vol_hrs,lives_impact,activity_type,status,poc_contact FROM event_summary where poc_id=?1", nativeQuery=true)
+	List<EventDetails> findEventDetailsByPOC(String id);
+	@Query(value="SELECT event_id,poc_id,poc_name,month,base_location,beneficiary_name,venue_address,council_name,project,catagory,event_name,event_description,event_date,total_vol_no,total_vol_hrs,total_travel_hrs,overall_vol_hrs,lives_impact,activity_type,status,poc_contact FROM event_summary where event_id=?1", nativeQuery=true)
+	List<EventDetails> findEventBeneficiary(String eid);
+	@Query(value="SELECT um.user_id,um.first_name,um.last_name,um.email_address from user_role_access ura inner join user_master um on ura.associate_id=um.user_id  where ura.role=?1",nativeQuery=true)
+	List<UserMasterDetails> retrievePMODetailsByRole(String role);
 /*Optional<EventSummaryEntity> findByEventIdAndPocId(String event_Id, String poc_Id);
 	
 	@Override

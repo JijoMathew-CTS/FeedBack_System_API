@@ -20,15 +20,13 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
 import com.fms.entity.EventPK;
 import com.fms.entity.EventSummaryEntity;
 import com.fms.entity.UserRole;
-import com.fms.entity.VolunteerAttendedEntity;
-import com.fms.entity.VolunteerNotAttendedEntity;
-import com.fms.entity.VolunteerUnregisteredEntity;
+import com.fms.entity.VolunteerAttended;
+import com.fms.entity.VolunteerNotAttended;
+import com.fms.entity.VolunteerUnregistered;
 import com.fms.model.Roles;
 import com.fms.repo.EventRptRepository;
 import com.fms.repo.RoleRepository;
@@ -38,13 +36,13 @@ import com.fms.repo.VolunteerUnregisteredRepo;
 
 @Component
 public class ExcelService {
-
+	
 	@Autowired
 	private RoleRepository userRoleRepository;
-
+	
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
+	
 	@Autowired
 	private VolunteerAttendedRepo volunteerAttendedRepo;
 
@@ -56,31 +54,39 @@ public class ExcelService {
 
 	@Autowired
 	private EventRptRepository eventSummaryRepo;
-
-	public void saveExcel(String filePath, String fileName) throws IOException, InvalidFormatException {
-
-		if (fileName.equals("Volunteer_Not_Attend.xlsx")) {
-			readExcel("NOT_ATTENDED", filePath);
+	
+	public void saveExcel(String filePath,String fileName) throws IOException, InvalidFormatException {
+	
+	System.out.println("fileName = "+fileName);
+	
+		if (fileName.equals("Volunteer_Enrolement_Details_Not_Attend.xlsx")) {
+			readExcel("NOT_ATTENDED",filePath);
 		} else if (fileName.equals("Volunteer_Attend.xlsx")) {
-			readExcel("ATTENDED", filePath);
-		} else if (fileName.equals("Volunteer_Unregistered.xlsx")) {
-			readExcel("UNREG", filePath);
-		} else if (fileName.equals("Events_Summary.xlsx")) {
-			readExcel("SUMMERY", filePath);
+			readExcel("ATTENDED",filePath);
+		} else if (fileName.equals("volunteer_Enrollement_Details_unRegister.xlsx")) {
+			readExcel("UNREG",filePath);
+		} else if (fileName.equals("Outreach_Events_Summary.xlsx")) {
+			readExcel("SUMMERY",filePath);	
 		} else {
 			return;
 		}
 	}
 
-	public void readExcel(String type, String filePath) throws FileNotFoundException, InvalidFormatException {
-
-
+	public void readExcel(String type,String filePath) throws FileNotFoundException, InvalidFormatException {
+		System.out.println("type = "+type);
+		
+		//FileInputStream file = new FileInputStream(filePath);
+		
 		POIFSFileSystem fis = null;
-		XSSFWorkbook myWorkBook = null;
+		XSSFWorkbook  myWorkBook = null;
 		try {
+			/*fis = new FileInputStream(filePath.toFile());*/
+			//fis = new FileInputStream(filePath);
 			OPCPackage pkg = OPCPackage.open(new File(filePath));
-
-			myWorkBook = new XSSFWorkbook(pkg);
+			
+			//fis=new POIFSFileSystem(file);
+			myWorkBook = new XSSFWorkbook (pkg);
+			//myWorkBook=(HSSFWorkbook) WorkbookFactory.create(fis);
 			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
 			Iterator<Row> rowIterator = mySheet.iterator();
 
@@ -89,202 +95,242 @@ public class ExcelService {
 			}
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yy");
 
-			if (type == "ATTENDED") {
-				List<VolunteerAttendedEntity> eventInfoList = new ArrayList<>();
+			if (type=="ATTENDED") {
+				List<VolunteerAttended> eventInfoList = new ArrayList<>();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					VolunteerAttendedEntity eventInfoEntity = getVolunteerAttended(dateFormat, row);
+					
+					System.out.println("before get = ");
+					
+					VolunteerAttended eventInfoEntity = getVolunteerAttended(dateFormat, row);
+					System.out.println("after get = ");
 					eventInfoEntity.setEmailStatus("I");
 					eventInfoList.add(eventInfoEntity);
 				}
-				if(!CollectionUtils.isEmpty(eventInfoList)) {
-					volunteerAttendedRepo.saveAll(eventInfoList);
-				}
-
-			} else if (type == "NOT_ATTENDED") {
-				List<VolunteerNotAttendedEntity> eventInfoList = new ArrayList<>();
-				while (rowIterator.hasNext()) {
-					Row row = rowIterator.next();
-					VolunteerNotAttendedEntity eventInfoEntity = getVolunteerNotAttended(dateFormat, row);
-					eventInfoList.add(eventInfoEntity);
-				}
-				if(!CollectionUtils.isEmpty(eventInfoList)) {
-					volunteerNotAttendedRepo.saveAll(eventInfoList);
-				}
+				volunteerAttendedRepo.saveAll(eventInfoList);
 				
-
-			} else if (type == "UNREG") {
-				List<VolunteerUnregisteredEntity> eventInfoList = new ArrayList<>();
+			} else if (type=="NOT_ATTENDED") {
+				List<VolunteerNotAttended> eventInfoList = new ArrayList<>();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
-					VolunteerUnregisteredEntity eventInfoEntity = getVolunteerUnregistered(dateFormat, row);
+					VolunteerNotAttended eventInfoEntity = getVolunteerNotAttended(dateFormat, row);
+					eventInfoEntity.setEmailStatus("I");
 					eventInfoList.add(eventInfoEntity);
 				}
-				if(!CollectionUtils.isEmpty(eventInfoList)) {
-					volunteerUnregisteredRepo.saveAll(eventInfoList);
+				volunteerNotAttendedRepo.saveAll(eventInfoList);
+				
+			} else if (type=="UNREG") {
+				List<VolunteerUnregistered> eventInfoList = new ArrayList<>();
+				while (rowIterator.hasNext()) {
+					Row row = rowIterator.next();
+					VolunteerUnregistered eventInfoEntity = getVolunteerUnregistered(dateFormat, row);
+					eventInfoEntity.setEmailStatus("I");
+					eventInfoList.add(eventInfoEntity);
 				}
-
-			} else if (type == "SUMMERY") {
+				volunteerUnregisteredRepo.saveAll(eventInfoList);
+				
+			} else  if (type=="SUMMERY") {
 				List<EventSummaryEntity> eventInfoList = new ArrayList<>();
 				while (rowIterator.hasNext()) {
 					Row row = rowIterator.next();
 					EventSummaryEntity eventInfoEntity = getEventSummary(row);
 					eventInfoList.add(eventInfoEntity);
 				}
-				if(!CollectionUtils.isEmpty(eventInfoList)) {
-					saveSummery(eventInfoList);
-				}			
-
+				saveSummery(eventInfoList);
+				
 			}
 		} catch (IOException ie) {
 			ie.printStackTrace();
 		} catch (ParseException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (myWorkBook != null) {
-				/*
-				 * try { myWorkBook.close(); } catch (IOException e) { e.printStackTrace(); }
-				 */
+				/*try {
+					myWorkBook.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}*/
 			}
 			if (fis != null) {
-				/*
-				 * try { fis.close(); } catch (IOException e) { e.printStackTrace(); }
-				 */
+				/*try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}*/
 			}
 		}
 	}
-
-	private EventSummaryEntity getEventSummary(Row row) {
+	
+	private EventSummaryEntity getEventSummary(Row row) throws ParseException {
 		EventSummaryEntity eventSummaryEntity = new EventSummaryEntity();
 		DataFormatter formatter = new DataFormatter();
-		String eventId = formatter.formatCellValue(row.getCell(0));
-		eventSummaryEntity.setMonth(formatter.formatCellValue(row.getCell(1)));
-		eventSummaryEntity.setBaseLocation(formatter.formatCellValue(row.getCell(2)));
-		eventSummaryEntity.setBeneficiaryName(formatter.formatCellValue(row.getCell(3)));
-		eventSummaryEntity.setVenueAddress(formatter.formatCellValue(row.getCell(4)));
-		eventSummaryEntity.setCouncilName(formatter.formatCellValue(row.getCell(5)));
-		eventSummaryEntity.setProject(formatter.formatCellValue(row.getCell(6)));
-		eventSummaryEntity.setCategory(formatter.formatCellValue(row.getCell(7)));
-		eventSummaryEntity.setEventName(formatter.formatCellValue(row.getCell(8)));
-		eventSummaryEntity.setEventDescription(formatter.formatCellValue(row.getCell(9)));
-		eventSummaryEntity.setEventDate(formatDate(formatter.formatCellValue(row.getCell(10))));
-		eventSummaryEntity.setTotalNoOfVolunteers(getNumber(formatter.formatCellValue(row.getCell(11))));
-		eventSummaryEntity.setTotalVolHours(getDouble(formatter.formatCellValue(row.getCell(12))));
-		eventSummaryEntity.setTotalTravelHours(getDouble(formatter.formatCellValue(row.getCell(13))));
-		eventSummaryEntity.setOverAllVolHours(getDouble(formatter.formatCellValue(row.getCell(14))));
-		eventSummaryEntity.setLivesImpacted(getNumber(formatter.formatCellValue(row.getCell(15))));
-		eventSummaryEntity.setActivityType(formatter.formatCellValue(row.getCell(16)));
-		eventSummaryEntity.setStatus(formatter.formatCellValue(row.getCell(17)));
-		eventSummaryEntity.setPocId(formatter.formatCellValue(row.getCell(18)));
-		eventSummaryEntity.setPocName(formatter.formatCellValue(row.getCell(19)));
-		eventSummaryEntity.setPocContactNumber(formatter.formatCellValue(row.getCell(20)));
-
-		eventSummaryEntity.setEventId(eventId);
-		// row.getCell(2).setCellType(CellType.STRING);
-		
+		String eventId 			= formatter.formatCellValue(row.getCell(0));
+	    String month            =formatter.formatCellValue(row.getCell(1));
+	    String baseLocation= formatter.formatCellValue(row.getCell(2));
+	    String beneficiaryName=formatter.formatCellValue(row.getCell(3));
+	    String venueAddress=formatter.formatCellValue(row.getCell(4));
+	    String councilName=formatter.formatCellValue(row.getCell(5));
+	    String project= formatter.formatCellValue(row.getCell(6));
+	    String catagory=formatter.formatCellValue(row.getCell(7));
+	    String eventName=formatter.formatCellValue(row.getCell(8));
+	    String eventDescription=formatter.formatCellValue(row.getCell(9));
+	    Date eventDate=new SimpleDateFormat("DD-MM-YY").parse(formatter.formatCellValue(row.getCell(10)));
+	    Integer totalVolNo=Integer.parseInt(formatter.formatCellValue(row.getCell(11)));
+	    Integer totalVolHrs=Integer.parseInt(formatter.formatCellValue(row.getCell(12)));
+	    Integer totalTravelHrs=Integer.parseInt(formatter.formatCellValue(row.getCell(13)));
+	    Integer overallVolHrs=Integer.parseInt(formatter.formatCellValue(row.getCell(14)));
+	    Integer livesImpact=Integer.parseInt(formatter.formatCellValue(row.getCell(15)));
+	    String activityType=formatter.formatCellValue(row.getCell(16));
+	    String status=formatter.formatCellValue(row.getCell(17));
+	    String pocId=formatter.formatCellValue(row.getCell(18));
+	    String pocName=formatter.formatCellValue(row.getCell(19));
+	    Integer pocContact=Integer.parseInt(formatter.formatCellValue(row.getCell(20)));
+		eventSummaryEntity.setEvent_Id(eventId);
+		eventSummaryEntity.setPoc_Id(pocId);
+		eventSummaryEntity.setPoc_Name(pocName);
+		eventSummaryEntity.setMonth(month);
+		eventSummaryEntity.setBase_location(baseLocation);
+		eventSummaryEntity.setBeneficiary_name(beneficiaryName);
+		eventSummaryEntity.setVenue_address(venueAddress);
+		eventSummaryEntity.setCouncil_name(councilName);
+		eventSummaryEntity.setProject(project);
+		eventSummaryEntity.setCatagory(catagory);
+		eventSummaryEntity.setEvent_name(eventName);
+		eventSummaryEntity.setEvent_date(eventDate);
+		eventSummaryEntity.setEvent_description(eventDescription);
+		eventSummaryEntity.setEvent_date(eventDate);
+		eventSummaryEntity.setTotal_vol_no(totalVolNo);
+		eventSummaryEntity.setTotal_vol_hrs(totalVolHrs);
+		eventSummaryEntity.setOverall_vol_hrs(overallVolHrs);
+		eventSummaryEntity.setTotal_travel_hrs(totalTravelHrs);
+		eventSummaryEntity.setLives_impact(livesImpact);
+		eventSummaryEntity.setActivity_type(activityType);
+		eventSummaryEntity.setStatus(status);
+		eventSummaryEntity.setPoc_contact(pocContact);
 		return eventSummaryEntity;
 	}
-	
-	private Integer getNumber(String value) {
-		if(!StringUtils.isEmpty(value)) {
-			return Integer.valueOf(value);
-		}
-		return 0;
+	private VolunteerUnregistered getVolunteerUnregistered(SimpleDateFormat dateFormat, Row row) throws ParseException {
+		VolunteerUnregistered eventInfoEntity = new VolunteerUnregistered();
+		//row.getCell(1).setCellType(CellType.STRING);
+		DataFormatter formatter = new DataFormatter();
+		String eventId 			= formatter.formatCellValue(row.getCell(0));
+		String eventname 		= formatter.formatCellValue(row.getCell(1));
+		String beneficiaryName	= formatter.formatCellValue(row.getCell(2));
+		String baseLocation		= formatter.formatCellValue(row.getCell(3));
+		String eventDate 		= formatter.formatCellValue(row.getCell(4));
+		String employeeId 		= formatter.formatCellValue(row.getCell(5));
+		
+		eventInfoEntity
+				.setEventPK(new EventPK(eventId, employeeId + ""));
+		eventInfoEntity.setBaseLocation(baseLocation);
+		eventInfoEntity.setBeneficiaryName(beneficiaryName);
+		eventInfoEntity.setEventDate(dateFormat.parse(eventDate));
+		eventInfoEntity.setEventName(eventname);
+		return eventInfoEntity;
 	}
-	
-	private Double getDouble(String value) {
-		if(!StringUtils.isEmpty(value)) {
-			return Double.valueOf(value);
+		private VolunteerNotAttended getVolunteerNotAttended(SimpleDateFormat dateFormat, Row row) throws ParseException {
+			VolunteerNotAttended eventInfoEntity = new VolunteerNotAttended();
+			//row.getCell(1).setCellType(CellType.STRING);
+			
+			DataFormatter formatter = new DataFormatter();
+			String eventId 			= formatter.formatCellValue(row.getCell(0));
+			String eventname 		= formatter.formatCellValue(row.getCell(1));
+			String beneficiaryName	= formatter.formatCellValue(row.getCell(2));
+			String baseLocation		= formatter.formatCellValue(row.getCell(3));
+			String eventDate 		= formatter.formatCellValue(row.getCell(4));
+			String employeeId 		= formatter.formatCellValue(row.getCell(5));
+			
+			eventInfoEntity.setEventPK(new EventPK(eventId, employeeId + ""));
+			eventInfoEntity.setBaseLocation(baseLocation);
+			eventInfoEntity.setBeneficiaryName(beneficiaryName);
+			eventInfoEntity.setEventDate(dateFormat.parse(eventDate));
+			eventInfoEntity.setEventName(eventname);
+			return eventInfoEntity;
 		}
-		return 0.0;
-	}
-	
-	private Date formatDate(String dateValue) {
-		String pattern = "MM-dd-yy";
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat(pattern);
-		Date date = null;
+		
+		private VolunteerAttended getVolunteerAttended(SimpleDateFormat dateFormat, Row row) throws ParseException {
+			VolunteerAttended eventInfoEntity = new VolunteerAttended();
+			//row.getCell(1).setCellType(CellType.STRING);
+			DataFormatter formatter = new DataFormatter();
+			String eventId 			= formatter.formatCellValue(row.getCell(0));
+			String employeeId 		= formatter.formatCellValue(row.getCell(1));
+			String baseLocation		= formatter.formatCellValue(row.getCell(2));
+			String beneficiaryName	= formatter.formatCellValue(row.getCell(3));
+			String eventDate 		= formatter.formatCellValue(row.getCell(4));
+			String eventname 		= formatter.formatCellValue(row.getCell(5));
+			
+			eventInfoEntity
+					.setEventPK(new EventPK(eventId, employeeId + ""));
+
+			eventInfoEntity.setBaseLocation(baseLocation);
+			eventInfoEntity.setBeneficiaryName(beneficiaryName);
+			eventInfoEntity.setEventDate(dateFormat.parse(eventDate));
+			eventInfoEntity.setEventName(eventname);
+			return eventInfoEntity;
+		}
+		
+	/*public void savePmoDetails(String filePath) throws IOException {
+		FileInputStream fis = null;
+		XSSFWorkbook myWorkBook = null;
+		List<UserRole> pmoList = new ArrayList<>();
+
 		try {
-			date = simpleDateFormat.parse(dateValue);
-		} catch (ParseException e) {
-			e.printStackTrace();
+			fis = new FileInputStream(filePath);
+			myWorkBook = new XSSFWorkbook(fis);
+			Row row = null;
+			XSSFSheet mySheet = myWorkBook.getSheetAt(0);
+
+			Iterator<Row> rowIterator = mySheet.iterator();
+
+			if (rowIterator.hasNext()) {
+				rowIterator.next();
+			}
+			String associateId = "";
+			while (rowIterator.hasNext()) {
+				associateId = row.getCell(0).getStringCellValue();
+				row = rowIterator.next();
+				row.getCell(0).setCellType(Cell.CELL_TYPE_STRING);
+				pmoList.add(new UserRole(associateId + "@cognizant.com",	// email
+						associateId, 										// username
+						passwordEncoder.encode(associateId),				// password
+						true, true, true, true, Roles.ROLE_PMO));
+			}
+		} catch (IOException ie) {
+			ie.printStackTrace();
+		} finally {
+			if (myWorkBook != null) {
+				//try {
+					//myWorkBook.close();
+				//} catch (IOException e) {
+				//	e.printStackTrace();
+				//}
+			}
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
-		return date;
+
+		userRoleRepository.saveAll(pmoList);
+		Files.delete(Paths.get(filePath));
 	}
-
-	private VolunteerUnregisteredEntity getVolunteerUnregistered(SimpleDateFormat dateFormat, Row row) throws ParseException {
-		VolunteerUnregisteredEntity eventInfoEntity = new VolunteerUnregisteredEntity();
-		DataFormatter formatter = new DataFormatter();
-		String eventId = formatter.formatCellValue(row.getCell(0));
-		String eventname = formatter.formatCellValue(row.getCell(1));
-		String beneficiaryName = formatter.formatCellValue(row.getCell(2));
-		String baseLocation = formatter.formatCellValue(row.getCell(3));
-		String eventDate = formatter.formatCellValue(row.getCell(4));
-		String employeeId = formatter.formatCellValue(row.getCell(5));
-
-		eventInfoEntity.setEventPK(new EventPK(eventId, employeeId));
-		eventInfoEntity.setBaseLocation(baseLocation);
-		eventInfoEntity.setBeneficiaryName(beneficiaryName);
-		eventInfoEntity.setEventDate(dateFormat.parse(eventDate));
-		eventInfoEntity.setEventName(eventname);
-		return eventInfoEntity;
-	}
-
-	private VolunteerNotAttendedEntity getVolunteerNotAttended(SimpleDateFormat dateFormat, Row row) throws ParseException {
-		VolunteerNotAttendedEntity eventInfoEntity = new VolunteerNotAttendedEntity();
-		DataFormatter formatter = new DataFormatter();
-		String eventId = formatter.formatCellValue(row.getCell(0));
-		String eventname = formatter.formatCellValue(row.getCell(1));
-		String beneficiaryName = formatter.formatCellValue(row.getCell(2));
-		String baseLocation = formatter.formatCellValue(row.getCell(3));
-		String eventDate = formatter.formatCellValue(row.getCell(4));
-		String employeeId = formatter.formatCellValue(row.getCell(5));
-		eventInfoEntity.setEventPK(new EventPK(eventId, employeeId));
-		eventInfoEntity.setBaseLocation(baseLocation);
-		eventInfoEntity.setBeneficiaryName(beneficiaryName);
-		eventInfoEntity.setEventDate(dateFormat.parse(eventDate));
-		eventInfoEntity.setEventName(eventname);
-		return eventInfoEntity;
-	}
-
-	private VolunteerAttendedEntity getVolunteerAttended(SimpleDateFormat dateFormat, Row row) throws ParseException {
-		VolunteerAttendedEntity eventInfoEntity = new VolunteerAttendedEntity();
-		DataFormatter formatter = new DataFormatter();
-		String eventId = formatter.formatCellValue(row.getCell(0));
-		String baseLocation = formatter.formatCellValue(row.getCell(1));
-		String beneficiaryName = formatter.formatCellValue(row.getCell(2));
-		String eventname = formatter.formatCellValue(row.getCell(4));
-		String employeeId = formatter.formatCellValue(row.getCell(7));
-		String employeeName = formatter.formatCellValue(row.getCell(8));
-		Double volHours = getDouble(formatter.formatCellValue(row.getCell(9)));
-		Double travelHours = getDouble(formatter.formatCellValue(row.getCell(10)));
-		Integer livesImpacted = getNumber(formatter.formatCellValue(row.getCell(11)));
-		String status = formatter.formatCellValue(row.getCell(13));
-		String iiepCategory = formatter.formatCellValue(row.getCell(14));		
-		eventInfoEntity.setEmployeeName(employeeName);
-		eventInfoEntity.setVolHours(volHours);
-		eventInfoEntity.setTravelHours(travelHours);
-		eventInfoEntity.setLivesImpacted(livesImpacted);
-		eventInfoEntity.setStatus(status);
-		eventInfoEntity.setIiepCategory(iiepCategory);
-		eventInfoEntity.setEventPK(new EventPK(eventId, employeeId ));
-		eventInfoEntity.setBaseLocation(baseLocation);
-		eventInfoEntity.setBeneficiaryName(beneficiaryName);
-		eventInfoEntity.setEventName(eventname);
-		return eventInfoEntity;
-	}
-
+	*/
 	private void saveSummery(List<EventSummaryEntity> eventInfoList) {
-
-
-		//List<EventSummaryEntity> resultList = new ArrayList<>();
+		// TODO Auto-generated method stub
+System.out.println("inside save summery = ");
+		List<EventSummaryEntity> resultList = new ArrayList<>();
 		List<UserRole> userList = new ArrayList<>();
 
 		eventInfoList.stream().forEach(es -> {
 
 			// for multiple poc id
-			if (es.getPocId().contains(";")) {
-				String[] pocIds = es.getPocId().split(";");
-				String[] names = es.getPocName().split(";");
+			if (es.getPoc_Id().contains(";")) {
+				String[] pocIds = es.getPoc_Id().split(";");
+				String[] names = es.getPoc_Name().split(";");
 				int index = 0;
 				// create a new es and user role object
 				for (String id : pocIds) {
@@ -296,9 +342,9 @@ public class ExcelService {
 
 			} else {
 				// for non multiple pocId
-				//resultList.add(new EventSummaryEntity(es.getEventId(), es.getPocId(), es.getPocName()));
-				userList.add(new UserRole(es.getPocId() + "@cognizant.com", es.getPocId(),
-						passwordEncoder.encode(es.getPocId()), true, true, true, true, Roles.ROLE_POC));
+			//	resultList.add(new EventSummaryEntity(es.getEventId(), es.getPocId(), es.getPocName()));
+				userList.add(new UserRole(es.getPoc_Id() + "@cognizant.com", es.getPoc_Id(),
+						passwordEncoder.encode(es.getPoc_Id()), true, true, true, true, Roles.ROLE_POC));
 			}
 
 		});
@@ -308,4 +354,5 @@ public class ExcelService {
 
 	}
 
+	
 }
